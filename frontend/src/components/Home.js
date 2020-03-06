@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu, Header, Button } from 'semantic-ui-react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import SignUp from './SignUp';
 
 export default class Home extends React.Component {
     constructor() {
@@ -34,10 +35,17 @@ export default class Home extends React.Component {
                             About
                         </Menu.Item>
                         <Menu.Item
-                            position='right'>
-                            <Button primary>Sign Up</Button>
+                            position='right'
+                            name='signUp' onClick={this.handleItemClick}
+                            as='div'>
+                            <Link to='/signUp'>
+                                <Button primary>Sign Up</Button>
+                            </Link>
                         </Menu.Item>
                     </Menu>
+                    <Switch>
+                        <Route path='/signUp' component={SignUp}/>
+                    </Switch>
                 </Router>
             </div>
         );
