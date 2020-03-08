@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import SignUp from './SignUp';
+import LogIn from './LogIn';
+import Post from './Post';
+import Navbar from './Navbar';
+import Home from './Home';
 
-export default class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            apiResponse: {},
-        };
+export default class App extends React.Component {
+    constructor() {
+        super();
     }
-    
-    getThoughts() {
-        fetch('localhost:8080/getThoughts').then(res=>{
-            console.log(res);
-            res = res.json();
-            console.log(res);
-            this.setState({apiResponse:res});
-        });
-    }
-    
+
     render() {
         return (
-            <div>
-                <button onClick={()=>this.getThoughts()}>Get Thoughts</button>
-            </div>
+            <Router>
+                <Navbar/>
+                    <Switch>
+                        <Route path='/' exact component={Home}/>
+                        <Route path='/signUp' component={SignUp}/>
+                        <Route path='/logIn' component={LogIn}/>
+                        <Route path='/post' component={Post}/>
+                    </Switch>
+            </Router>
         );
     }
 }

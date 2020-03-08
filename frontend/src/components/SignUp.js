@@ -1,5 +1,4 @@
 import React from 'react';
-import 'semantic-ui-react';
 import { Form, Button, Container, Header } from 'semantic-ui-react';
 
 export default class SignUp extends React.Component {
@@ -12,7 +11,6 @@ export default class SignUp extends React.Component {
             password: "",
             confirm: "",
         }
-
     }
 
     handleChange = (event) => {
@@ -23,15 +21,22 @@ export default class SignUp extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        if (this.state.password !== this.state.confirm) return;
+        const {username, email, password} = this.state;
         fetch("http://localhost:4000/api/signUp",
             {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(this.state),
+                body: JSON.stringify({username: username, email: email, password: password}),
             }
-        );
+        ).then(res=>res.json()).then(res=>{
+            if (res) {
+                sessionStorage.setItem('user', this.state.username);
+                window.location.href = '/';
+            }
+        });
     }
 
     render() {
@@ -55,7 +60,7 @@ export default class SignUp extends React.Component {
                         <label>Confirm Password</label>
                         <input name='confirm' type='password' placeholder='Confirm Password' value={this.state.confirm} onChange={this.handleChange}></input>
                     </Form.Field>
-                    <Button type='submit' onClick={this.handleSubmit}>Submit</Button>
+                    <Button type='submit' onClick={this.handleSubmit}>Sign Up</Button>
                 </Form>
             </Container>
         );
