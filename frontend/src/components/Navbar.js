@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Header, Button } from 'semantic-ui-react';
+import { Menu, Header, Button, Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 export default class Navbar extends React.Component {
@@ -18,7 +18,7 @@ export default class Navbar extends React.Component {
 
     render() {
         return (
-                <Menu>
+                <Menu size="large">
                     <Menu.Item>
                         <Header>ThoughtBank</Header>
                     </Menu.Item>
@@ -28,24 +28,35 @@ export default class Navbar extends React.Component {
                         name='home'
                         active={this.state.activeItem === 'home'}
                         onClick={this.handleItemClick}>
-                        Home
+                        {sessionStorage.user ? "Post":"Withdraw"}
                     </Menu.Item>
-                    <Menu.Item
-                        name='about'
-                        active={this.state.activeItem === 'about'}
+                    {sessionStorage.user ? <Menu.Item
+                        as={Link}
+                        to='/withdraw'
+                        name='withdraw'
+                        active={this.state.activeItem === 'withdraw'}
                         onClick={this.handleItemClick}>
-                        About
-                    </Menu.Item>
+                        Withdraw
+                    </Menu.Item>:null}
+                    {sessionStorage.user ? 
+                    <Menu.Menu position='right'>
+                        <Dropdown item text='Account'>
+                            <Dropdown.Menu>
+                                <Dropdown.Item>My Account</Dropdown.Item>
+                                <Dropdown.Item>Russian</Dropdown.Item>
+                                <Dropdown.Divider/>
+                                <Dropdown.Item onClick={this.handleClickLogout}>Log Out</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Menu.Menu>:
                     <Menu.Item
-                        position='right'
-                        name='logIn' onClick={this.handleItemClick}
-                        as='div'>
-                        {sessionStorage.user ? 
-                        <Button color="red" onClick={this.handleClickLogout}>Log Out</Button>:
+                    position='right'
+                    name='logIn' onClick={this.handleItemClick}
+                    as='span'>
                         <Link to='/logIn'>
                             <Button primary>Log In</Button>
-                        </Link>}
-                    </Menu.Item>
+                        </Link>
+                    </Menu.Item>}
                 </Menu>
         );
     }
