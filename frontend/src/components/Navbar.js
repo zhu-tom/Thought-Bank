@@ -1,10 +1,11 @@
 import React from 'react';
-import { Menu, Header, Button, Dropdown } from 'semantic-ui-react';
+import { Menu, Header, Button, Dropdown, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 export default class Navbar extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             activeItem: 'home'
         }
@@ -40,12 +41,12 @@ export default class Navbar extends React.Component {
                     </Menu.Item>:null}
                     {sessionStorage.user ? 
                     <Menu.Menu position='right'>
-                        <Dropdown item text='Account'>
+                        <Dropdown pointing item text='Account' trigger={<span><Icon name='user' /> Hello, {sessionStorage.getItem('user')}</span>}>
                             <Dropdown.Menu>
-                                <Dropdown.Item>My Account</Dropdown.Item>
-                                <Dropdown.Item>Russian</Dropdown.Item>
+                                <Dropdown.Item name="account" onClick={this.handleItemClick}><Link style={{color:'black'}} to={`/user/${sessionStorage.getItem('user')}`}>My Account</Link></Dropdown.Item>
+                                <Dropdown.Item>Settings</Dropdown.Item>
                                 <Dropdown.Divider/>
-                                <Dropdown.Item onClick={this.handleClickLogout}>Log Out</Dropdown.Item>
+                                <Dropdown.Item icon="sign-out" onClick={this.handleClickLogout} text="Log Out"/>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Menu>:

@@ -20,24 +20,37 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.post('/api/signUp', (req, res) => {
-    bcrypt.hash(req.body.password, 10, (err, encrypted) => {
-        connection.query("INSERT INTO users (username, email, password) VALUES (?,?,?)", [req.body.username, req.body.email, encrypted], (err, result) => {
-            if (err) throw err;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({id: result.inserId});
-        });
+    connection.query("SELECT id FROM users WHERE username = ?", [req.body.username], (err, result) => {
+        if (err) throw err;
+        if (result.length !== 0) {
+            res.json({id: -1});
+        } else {
+            bcrypt.hash(req.body.password, 10, (err, encrypted) => {
+                connection.query("INSERT INTO users (username, email, password) VALUES (?,?,?)", [req.body.username, req.body.email, encrypted], (err, result) => {
+                    if (err) throw err;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({id: result.insertId, user: req.body.username});
+                });
+            });
+        }
     });
 });
 
 app.post('/api/logIn', (req, res) => {
-    connection.query("SELECT id, password FROM users WHERE username = ?", [req.body.username], (err, result) => {
+    connection.query("SELECT id, username, password FROM users WHERE username = ?", [req.body.username], (err, result) => {
         if (err) throw err;
-        bcrypt.compare(req.body.password, result[0].password, (err, same) => {
-            if (same) {
-                res.setHeader('Content-Type', 'application/json');
-                res.json({id: result[0].id});
-            }
-        });
+        if (result.length !== 0) {
+            bcrypt.compare(req.body.password, result[0].password, (err, same) => {
+                if (same) {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({id: result[0].id, user: result[0].username});
+                } else {
+                    res.json({errCode: 'password'});
+                }
+            });
+        } else {
+            res.json({errCode: 'username'});
+        }
     });
 });
 

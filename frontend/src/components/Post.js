@@ -32,7 +32,7 @@ export default class Post extends React.Component {
             headers: {
                 "Content-Type":"application/json",
             },
-            body: JSON.stringify({thought:this.state.post, asAnon:this.state.isAnon, userId: sessionStorage.user, date: new Date().toISOString().slice(0,23).replace('T', ' ')})
+            body: JSON.stringify({thought:this.state.post, asAnon:this.state.isAnon, userId: sessionStorage.id, date: new Date().toISOString().slice(0,23).replace('T', ' ')})
         }).then(res=>{
             this.setState({loading: false, post: ''});
             if (res.status === 200) {
